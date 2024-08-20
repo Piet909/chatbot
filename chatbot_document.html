@@ -9,6 +9,13 @@
 		<script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
 		<script src="https://mediafiles.botpress.cloud/8dbc8673-0938-4c0f-8f21-dbb57014bd7a/webchat/v2.1/config.js"></script>
 		<script>
+			window.botpressWebChat = {
+			  init,
+			  mergeConfig,
+			  onEvent,
+			  sendPayload,
+			  sendEvent,
+			}
 			window.botpressWebChat.onEvent(
 			  (event) => {
 				if (event.type === 'MESSAGE.RECEIVED') {
