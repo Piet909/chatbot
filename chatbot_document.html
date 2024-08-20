@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		 <title>ChatBot Document</title>
+	</head>
+	<body>
+		
+		<script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
+		<script src="https://mediafiles.botpress.cloud/8dbc8673-0938-4c0f-8f21-dbb57014bd7a/webchat/v2.1/config.js"></script>
+		<script>
+			window.botpressWebChat.onEvent(
+			  (event) => {
+				if (event.type === 'MESSAGE.RECEIVED') {
+				  console.log('È stato ricevuto un nuovo messaggio!')
+					if(event.value.payload.text === 'puoi scegliere un file'){
+						const fileInput = document.createElement('input');
+						fileInput.type = 'file';
+						fileInput.addEventListener('change', (event) => {
+							const file = event.target.files[0];
+							console.log('Seleziona file:', file);
+							const reader = new FileReader();
+							reader.onload = async function(event){
+								const fileContent = event.target.result;
+								const title = file.name;
+								console.log('Conetenuto file:', fileContent);
+								console.log('Nome file:', title);
+								window.botpressWebChat.sendPayload({
+									type: 'trigger',
+									payload: {									
+										title: title,
+										content: fileContent										
+									}
+								})
+							}
+							reader.readAsText(file);
+						})
+						fileInput.click();
+					}
+				}
+			  },
+			  ['MESSAGE.RECEIVED']
+			)
+		</script>
+	
+	</body>
+</html>
