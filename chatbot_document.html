@@ -10,52 +10,42 @@
   <script src="https://mediafiles.botpress.cloud/8dbc8673-0938-4c0f-8f21-dbb57014bd7a/webchat/v2.1/config.js"></script>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      window.addEventListener('botpressWebChatLoaded', () => {
-        window.botpressWebChat.onEvent((event) => {
-          if (event.type === 'MESSAGE.RECEIVED') {
-            console.log('Messaggio ricevuto:', event);
-            
-            // Verifica il payload del pulsante
-            if (event.value.payload.text === 'upload_file') {
-              // Crea l'elemento input per caricare il file
-              const fileInput = document.createElement('input');
-              fileInput.type = 'file';
-              fileInput.style.display = 'none'; // Nascondi l'input
-
-              // Quando l'utente seleziona un file
-              fileInput.addEventListener('change', (e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  console.log('Selezionato file:', file);
-
-                  // Leggi il contenuto del file
-                  const reader = new FileReader();
-                  reader.onload = (event) => {
-                    const fileContent = event.target.result;
-                    const title = file.name;
-                    console.log('Contenuto file:', fileContent);
-
-                    // Invia il contenuto del file al bot
-                    window.botpressWebChat.sendPayload({
-                      type: 'trigger',
-                      payload: {
-                        title: title,
-                        content: fileContent
-                      }
-                    });
-                  };
-                  reader.readAsText(file);
+    window.botpressWebChat.onEvent(
+  (event) => {
+    if (event.type === 'MESSAGE.RECEIVED') {
+      console.log('È stato ricevuto un nuovo messaggio!');
+      if (event.value.payload.text === 'puoi scegliere un file') {
+        // Attendi l'interazione dell'utente
+        setTimeout(() => {
+          const fileInput = document.createElement('input');
+          fileInput.type = 'file';
+          fileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            console.log('File selezionato:', file);
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+              const fileContent = event.target.result;
+              const title = file.name;
+              console.log('Contenuto file:', fileContent);
+              console.log('Nome file:', title);
+              window.botpressWebChat.sendPayload({
+                type: 'trigger',
+                payload: {
+                  title: title,
+                  content: fileContent
                 }
               });
+            };
+            reader.readAsText(file);
+          });
+          fileInput.click(); // Questo avvia la finestra di selezione file
+        }, 500); // Ritarda leggermente l'apertura per consentire all'interfaccia di elaborare l'evento
+      }
+    }
+  },
+  ['MESSAGE.RECEIVED']
+);
 
-              // Apre il dialogo di selezione file
-              fileInput.click();
-            }
-          }
-        });
-      });
-    });
   </script>
 </body>
 </html>
